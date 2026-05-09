@@ -100,7 +100,7 @@ def parse_nist_report():
 def run_nist_on_file(cygwin_file_path, actual_bits):
     clean_sts_output_dir()
     
-    CYGWIN_STS_DIR = "/cygdrive/c/cygwin64/sts-2_1_2"
+    CYGWIN_STS_DIR = f"{paths[5]}"
 
     safe_bits = actual_bits - 8 
     assess_cmd = f"cd {CYGWIN_STS_DIR} && ./assess.exe {safe_bits}"
@@ -184,6 +184,7 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    global paths
     parser.add_argument("-p", "--path", help="Target dataframe path")
     args = parser.parse_args()
     
@@ -192,13 +193,28 @@ if __name__ == "__main__":
     if args.path:
         DF_PATH = args.path
 
-    WINDOWS_CYGWIN_BASH = r"C:\cygwin64\bin\bash.exe"
-    WINDOWS_STS_ROOT    = r"C:\cygwin64\sts-2_1_2"
+    paths = []
 
-    CYGWIN_STS_ASSESS   = "/cygdrive/c/cygwin64/sts-2_1_2/assess"
-    CYGWIN_DATASET_ROOT = f"/cygdrive/c/Users/jmorp/OneDrive/Desktop/Projects/HS-Assign3/{DF_PATH}"
+    with open("src/paths.txt", 'r') as f:
+        paths = f.readlines()
 
-    WINDOWS_DATASET_ROOT = rf"C:\Users\jmorp\OneDrive\Desktop\Projects\HS-Assign3\{DF_PATH}"
+    for idx in range(len(paths)):
+        paths[idx] = paths[idx].strip()
+
+    WINDOWS_CYGWIN_BASH = rf"{paths[0]}"
+    WINDOWS_STS_ROOT    = rf"{paths[1]}"
+
+    CYGWIN_STS_ASSESS   = f"{paths[2]}"
+    CYGWIN_DATASET_ROOT = f"{paths[3]+DF_PATH}"
+
+    WINDOWS_DATASET_ROOT = rf"{paths[4]+DF_PATH}"
+
+    print(f"WINDOWS_CYGWIN_BASH = {WINDOWS_CYGWIN_BASH}")
+    print(f"WINDOWS_STS_ROOT = {WINDOWS_STS_ROOT}")
+    print(f"CYGWIN_STS_ASSESS = {CYGWIN_STS_ASSESS}")
+    print(f"CYGWIN_DATASET_ROOT = {CYGWIN_DATASET_ROOT}")
+    print(f"WINDOWS_DATASET_ROOT = {WINDOWS_DATASET_ROOT}")
+    print(f"CYGWIN_STS_ROOT = {paths[5]}")
 
     BIT_LENGTH = "1000000" 
     STREAMS    = "1"       
